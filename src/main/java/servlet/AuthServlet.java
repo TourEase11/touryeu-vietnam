@@ -44,7 +44,11 @@ public class AuthServlet extends HttpServlet {
             handleLogin(req, resp);
         } else if ("/register".equals(action)) {
             handleRegister(req, resp);
-        } 
+        } else if ("/update-profile".equals(action)) {
+            handleUpdateProfile(req, resp);
+        } else if ("/change-password".equals(action)) {
+            handleChangePassword(req, resp);
+        }
     }
     
     private void handleLogin(HttpServletRequest req, HttpServletResponse resp) 
@@ -108,5 +112,55 @@ public class AuthServlet extends HttpServlet {
         }
     }
     
+    private void handleUpdateProfile(HttpServletRequest req, HttpServletResponse resp) 
+            throws ServletException, IOException {
+        HttpSession session = req.getSession(false);
+        User currentUser = (User) session.getAttribute("user");
+        
+        currentUser.setFullname(req.getParameter("fullname"));
+        currentUser.setEmail(req.getParameter("email"));
+        currentUser.setPhone(req.getParameter("phone"));
+        currentUser.setAddress(req.getParameter("address"));
+        
+        if (userDAO.updateUser(currentUser)) {
+            session.setAttribute("user", currentUser);
+            req.setAttribute("success", "Cập nhật thông tin thành công!");
+        } else {
+            req.setAttribute("error", "Cập nhật thông tin thất bại!");
+        }
+        
+        req.getRequestDispatcher("/WEB-INF/views/profile.jsp").forward(req, resp);
+    }
     
+    private void handleChangePassword(HttpServletRequest req, HttpServletResponse resp) 
+            throws ServletException, IOException {
+        HttpSession session = req.getSession(false);
+        User currentUser = (User) session.getAttribute("user");
+        
+        String oldPassword = req.getParameter("oldPassword");
+        String newPassword = req.getParameter("newPassword");
+        String confirmPassword = req.getParameter("confirmPassword");
+        
+        if (!oldPassword.equals(currentUser.getPassword())) {
+            req.setAttribute("error", "Mật khẩu cũ không đúng!");
+            req.getRequestDispatcher("/WEB-INF/views/profile.jsp").forward(req, resp);
+            return;
+        }
+        
+        if (!newPassword.equals(confirmPassword)) {
+            req.setAttribute("error", "Mật khẩu mới không khớp!");
+            req.getRequestDispatcher("/WEB-INF/views/profile.jsp").forward(req, resp);
+            return;
+        }
+        
+        if (userDAO.changePassword(currentUser.getId(), newPassword)) {
+            currentUser.setPassword(newPassword);
+            session.setAttribute("user", currentUser);
+            req.setAttribute("success", "Đổi mật khẩu thành công!");
+        } else {
+            req.setAttribute("error", "Đổi mật khẩu thất bại!");
+        }
+        
+        req.getRequestDispatcher("/WEB-INF/views/profile.jsp").forward(req, resp);
+    }
 }
