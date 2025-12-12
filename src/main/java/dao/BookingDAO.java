@@ -1,10 +1,11 @@
-package com.tourbook.dao;
+package dao;
 
-import com.tourbook.model.Booking;
-import com.tourbook.util.DatabaseUtil;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+
+import model.Booking;
+import util.DatabaseUtil;
 
 public class BookingDAO {
     
