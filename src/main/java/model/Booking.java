@@ -1,5 +1,9 @@
 package model;
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 9dacb8d4de84a5a9a21fd01d13908fbae91bbfcd
 import java.sql.Date;
 import java.sql.Timestamp;
 
