@@ -1,6 +1,5 @@
 package servlet;
 
-
 import dao.CategoryDAO;
 
 import dao.TourDAO;
