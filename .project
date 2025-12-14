@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-<<<<<<< HEAD
-	<name>TourBook3</name>
-=======
-	<name>TourBook1</name>
->>>>>>> b36924f0ede6b5d7371d8802290529b3eec80ccf
+	<name>TourB</name>
 	<comment></comment>
 	<projects>
 	</projects>
@@ -24,19 +20,8 @@
 			<arguments>
 			</arguments>
 		</buildCommand>
-<<<<<<< HEAD
 	</buildSpec>
 	<natures>
-=======
-		<buildCommand>
-			<name>org.eclipse.m2e.core.maven2Builder</name>
-			<arguments>
-			</arguments>
-		</buildCommand>
-	</buildSpec>
-	<natures>
-		<nature>org.eclipse.m2e.core.maven2Nature</nature>
->>>>>>> b36924f0ede6b5d7371d8802290529b3eec80ccf
 		<nature>org.eclipse.jem.workbench.JavaEMFNature</nature>
 		<nature>org.eclipse.wst.common.modulecore.ModuleCoreNature</nature>
 		<nature>org.eclipse.wst.common.project.facet.core.nature</nature>

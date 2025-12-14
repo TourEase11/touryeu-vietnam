@@ -1,16 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?><project-modules id="moduleCoreId" project-version="1.5.0">
-<<<<<<< HEAD
-    <wb-module deploy-name="TourBook3">
+    <wb-module deploy-name="TourB">
         <wb-resource deploy-path="/" source-path="/src/main/webapp" tag="defaultRootSource"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/java"/>
-        <property name="context-root" value="TourBook3"/>
-        <property name="java-output-path" value="/TourBook3/build/classes"/>
-=======
-    <wb-module deploy-name="TourBook">
-        <wb-resource deploy-path="/" source-path="/src/main/webapp" tag="defaultRootSource"/>
-        <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/java"/>
-        <property name="context-root" value="TourBook"/>
-        <property name="java-output-path" value="/TourBook/build/classes"/>
->>>>>>> b36924f0ede6b5d7371d8802290529b3eec80ccf
+        <property name="context-root" value="TourB"/>
+        <property name="java-output-path" value="/TourB/build/classes"/>
     </wb-module>
 </project-modules>
