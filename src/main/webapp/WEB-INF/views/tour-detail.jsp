@@ -70,7 +70,53 @@
                 </div>
             </div>
             
-           
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="bi bi-chat-dots"></i> Đánh Giá (${tour.reviewCount})</h5>
+                </div>
+                <div class="card-body">
+                    <c:if test="${sessionScope.user != null && canReview}">
+                        <form method="post" action="${pageContext.request.contextPath}/tours/review" class="mb-4 p-3 bg-light rounded">
+                            <input type="hidden" name="tourId" value="${tour.id}">
+                            <div class="mb-3">
+                                <label class="form-label">Đánh giá của bạn</label>
+                                <select name="rating" class="form-select" required>
+                                    <option value="5">⭐⭐⭐⭐⭐ Tuyệt vời</option>
+                                    <option value="4">⭐⭐⭐⭐ Tốt</option>
+                                    <option value="3">⭐⭐⭐ Khá</option>
+                                    <option value="2">⭐⭐ Trung bình</option>
+                                    <option value="1">⭐ Kém</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Nhận xét</label>
+                                <textarea name="comment" class="form-control" rows="3" required></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Gửi Đánh Giá</button>
+                        </form>
+                    </c:if>
+                    
+                    <c:forEach items="${reviews}" var="review">
+                        <div class="border-bottom pb-3 mb-3">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <strong>${review.userFullname}</strong>
+                                <small class="text-muted"><fmt:formatDate value="${review.createdAt}" pattern="dd/MM/yyyy HH:mm"/></small>
+                            </div>
+                            <div class="my-2">
+                                <c:forEach begin="1" end="5" var="i">
+                                    <i class="bi bi-star${i <= review.rating ? '-fill' : ''} text-warning"></i>
+                                </c:forEach>
+                            </div>
+                            <p class="mb-0">${review.comment}</p>
+                        </div>
+                    </c:forEach>
+                    
+                    <c:if test="${empty reviews}">
+                        <p class="text-muted text-center">Chưa có đánh giá nào</p>
+                    </c:if>
+                </div>
+            </div>
+        </div>
         
         <div class="col-md-4">
             <div class="card shadow sticky-top" style="top: 100px;">

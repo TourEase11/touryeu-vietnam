@@ -1,7 +1,7 @@
 package servlet;
 
 import dao.CategoryDAO;
-
+import dao.ReviewDAO;
 import dao.TourDAO;
 import model.*;
 import javax.servlet.ServletException;
@@ -14,7 +14,8 @@ import java.util.List;
 public class TourServlet extends HttpServlet {
     private TourDAO tourDAO = new TourDAO();
     private CategoryDAO categoryDAO = new CategoryDAO();
-  
+    private ReviewDAO reviewDAO = new ReviewDAO();
+    
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) 
             throws ServletException, IOException {
@@ -34,7 +35,9 @@ public class TourServlet extends HttpServlet {
             throws ServletException, IOException {
         String pathInfo = req.getPathInfo();
         
-       
+        if ("/review".equals(pathInfo)) {
+            handleReview(req, resp);
+        }
     }
     
     private void handleList(HttpServletRequest req, HttpServletResponse resp) 
@@ -87,10 +90,44 @@ public class TourServlet extends HttpServlet {
             resp.sendRedirect(req.getContextPath() + "/tours");
             return;
         }
+        
+        List<Review> reviews = reviewDAO.getReviewsByTourId(tourId);
+        
+        HttpSession session = req.getSession(false);
+        boolean canReview = false;
+        if (session != null && session.getAttribute("user") != null) {
+            User user = (User) session.getAttribute("user");
+            canReview = !reviewDAO.hasUserReviewed(tourId, user.getId());
+        }
+        
         req.setAttribute("tour", tour);
-      
+        req.setAttribute("reviews", reviews);
+        req.setAttribute("canReview", canReview);
+        
         req.getRequestDispatcher("/WEB-INF/views/tour-detail.jsp").forward(req, resp);
     }
     
-   
+    private void handleReview(HttpServletRequest req, HttpServletResponse resp) 
+            throws ServletException, IOException {
+        HttpSession session = req.getSession(false);
+        if (session == null || session.getAttribute("user") == null) {
+            resp.sendRedirect(req.getContextPath() + "/auth/login");
+            return;
+        }
+        
+        User user = (User) session.getAttribute("user");
+        int tourId = Integer.parseInt(req.getParameter("tourId"));
+        int rating = Integer.parseInt(req.getParameter("rating"));
+        String comment = req.getParameter("comment");
+        
+        Review review = new Review();
+        review.setTourId(tourId);
+        review.setUserId(user.getId());
+        review.setRating(rating);
+        review.setComment(comment);
+        
+        reviewDAO.createReview(review);
+        
+        resp.sendRedirect(req.getContextPath() + "/tours/detail/" + tourId);
+    }
 }
