@@ -2,6 +2,7 @@ package servlet;
 
 import dao.BookingDAO;
 import dao.TourDAO;
+import dao.ReviewDAO;
 import model.*;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -110,7 +111,12 @@ public class BookingServlet extends HttpServlet {
             throws ServletException, IOException {
         User user = (User) req.getSession().getAttribute("user");
         List<Booking> bookings = bookingDAO.getBookingsByUserId(user.getId());
-        
+     
+        // Kiểm tra từng booking đã review chưa
+        ReviewDAO reviewDAO = new ReviewDAO();
+        for (Booking b : bookings) {
+            b.setReviewed(reviewDAO.hasReviewedBookingForUserBooking(b.getId(), user.getId()));
+        }
         req.setAttribute("bookings", bookings);
         req.getRequestDispatcher("/WEB-INF/views/my-bookings.jsp").forward(req, resp);
     }

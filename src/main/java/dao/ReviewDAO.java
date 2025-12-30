@@ -9,13 +9,14 @@ import java.util.List;
 public class ReviewDAO {
     
     public boolean createReview(Review review) {
-        String sql = "INSERT INTO reviews (tour_id, user_id, rating, comment) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO reviews (booking_id,tour_id, user_id, rating, comment) VALUES (?, ?, ?, ?, ?)";
         try (Connection conn = DatabaseUtil.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, review.getTourId());
-            ps.setInt(2, review.getUserId());
-            ps.setInt(3, review.getRating());
-            ps.setString(4, review.getComment());
+        	ps.setInt(1, review.getBookingId());
+            ps.setInt(2, review.getTourId());
+            ps.setInt(3, review.getUserId());
+            ps.setInt(4, review.getRating());
+            ps.setString(5, review.getComment());
             return ps.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -50,20 +51,47 @@ public class ReviewDAO {
         return reviews;
     }
     
-    public boolean hasUserReviewed(int tourId, int userId) {
-        String sql = "SELECT COUNT(*) FROM reviews WHERE tour_id = ? AND user_id = ?";
+//    public boolean hasUserReviewed(int tourId, int userId) {
+//        String sql = "SELECT COUNT(*) FROM reviews WHERE tour_id = ? AND user_id = ?";
+//        try (Connection conn = DatabaseUtil.getConnection();
+//             PreparedStatement ps = conn.prepareStatement(sql)) {
+//            ps.setInt(1, tourId);
+//            ps.setInt(2, userId);
+//            try (ResultSet rs = ps.executeQuery()) {
+//                if (rs.next()) {
+//                    return rs.getInt(1) > 0;
+//                }
+//            }
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+//        return false;
+//    }
+    public boolean hasReviewedBooking(int bookingId) {
+        String sql = "SELECT 1 FROM reviews WHERE booking_id = ?";
         try (Connection conn = DatabaseUtil.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, tourId);
-            ps.setInt(2, userId);
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    return rs.getInt(1) > 0;
-                }
-            }
+
+            ps.setInt(1, bookingId);
+            return ps.executeQuery().next();
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return false;
     }
+    
+    public boolean hasReviewedBookingForUserBooking(int bookingId, int userId) {
+        String sql = "SELECT 1 FROM reviews WHERE booking_id = ? AND user_id = ?";
+        try (Connection conn = DatabaseUtil.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, bookingId);
+            ps.setInt(2, userId);
+            return ps.executeQuery().next();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+
 }

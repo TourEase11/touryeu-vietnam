@@ -51,6 +51,32 @@
                                             </c:choose>
                                         </div>
                                         
+                                         <!-- Nút Review chỉ hiển thị khi COMPLETED và chưa review -->
+  <c:if test="${booking.status == 'COMPLETED' && !booking.reviewed}">
+    <form method="post" action="${pageContext.request.contextPath}/tours/review" class="mb-2 p-2 bg-light rounded">
+        <input type="hidden" name="bookingId" value="${booking.id}">
+        
+        <div class="mb-2">
+            <label>Đánh giá</label>
+            <select name="rating" class="form-select" required>
+                <option value="5">⭐⭐⭐⭐⭐ Tuyệt vời</option>
+                <option value="4">⭐⭐⭐⭐ Tốt</option>
+                <option value="3">⭐⭐⭐ Khá</option>
+                <option value="2">⭐⭐ Trung bình</option>
+                <option value="1">⭐ Kém</option>
+            </select>
+        </div>
+        <div class="mb-2">
+            <label>Nhận xét</label>
+            <textarea name="comment" class="form-control" rows="2" required></textarea>
+        </div>
+        <button type="submit" class="btn btn-warning btn-sm">
+            <i class="bi bi-star"></i> Gửi đánh giá
+        </button>
+    </form>
+</c:if>
+
+                                        
                                         <p class="fs-4 fw-bold text-primary mb-3">
                                             <fmt:formatNumber value="${booking.totalPrice}" type="number"/> VNĐ
                                         </p>

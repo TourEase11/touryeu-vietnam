@@ -5,6 +5,7 @@ import java.sql.Timestamp;
 
 public class Review {
     private int id;
+    private int bookingId;
     private int tourId;
     private int userId;
     private int rating;
@@ -22,6 +23,14 @@ public class Review {
     
     public int getUserId() { return userId; }
     public void setUserId(int userId) { this.userId = userId; }
+    
+    public int getBookingId() {
+        return bookingId;
+    }
+    public void setBookingId(int bookingId) {
+        this.bookingId = bookingId;
+    }
+
     
     public int getRating() { return rating; }
     public void setRating(int rating) { this.rating = rating; }

@@ -3,6 +3,8 @@ package servlet;
 import dao.CategoryDAO;
 import dao.ReviewDAO;
 import dao.TourDAO;
+import dao.BookingDAO;
+
 import model.*;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -12,6 +14,7 @@ import java.util.List;
 
 @WebServlet("/tours/*")
 public class TourServlet extends HttpServlet {
+	private BookingDAO bookingDAO = new BookingDAO();
     private TourDAO tourDAO = new TourDAO();
     private CategoryDAO categoryDAO = new CategoryDAO();
     private ReviewDAO reviewDAO = new ReviewDAO();
@@ -97,7 +100,7 @@ public class TourServlet extends HttpServlet {
         boolean canReview = false;
         if (session != null && session.getAttribute("user") != null) {
             User user = (User) session.getAttribute("user");
-            canReview = !reviewDAO.hasUserReviewed(tourId, user.getId());
+            //canReview = !reviewDAO.hasUserReviewed(tourId, user.getId());
         }
         
         req.setAttribute("tour", tour);
@@ -116,18 +119,33 @@ public class TourServlet extends HttpServlet {
         }
         
         User user = (User) session.getAttribute("user");
-        int tourId = Integer.parseInt(req.getParameter("tourId"));
-        int rating = Integer.parseInt(req.getParameter("rating"));
+        int bookingId = Integer.parseInt(req.getParameter("bookingId"));        int rating = Integer.parseInt(req.getParameter("rating"));
         String comment = req.getParameter("comment");
         
+     // 1️ Check booking COMPLETED + đúng user
+        Booking booking = bookingDAO.getCompletedBookingForReview(bookingId, user.getId());
+        if (booking == null) {
+            resp.sendError(403, "Booking không hợp lệ hoặc chưa hoàn thành");
+            return;
+        }
+
+        // 2️ Check đã review chưa
+        if (reviewDAO.hasReviewedBooking(bookingId)) {
+            resp.sendError(400, "Booking này đã được review");
+            return;
+        }
+        
+        
+     // 3️ Create review
         Review review = new Review();
-        review.setTourId(tourId);
+        review.setBookingId(bookingId);
+        review.setTourId(booking.getTourId());
         review.setUserId(user.getId());
         review.setRating(rating);
         review.setComment(comment);
         
         reviewDAO.createReview(review);
         
-        resp.sendRedirect(req.getContextPath() + "/tours/detail/" + tourId);
+        resp.sendRedirect(req.getContextPath() +  "/my-bookings");
     }
 }

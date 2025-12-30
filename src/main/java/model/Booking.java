@@ -16,6 +16,7 @@ public class Booking {
     private String contactEmail;
     private String notes;
     private String status;
+    private boolean reviewed;
     
     // Joined data
     private String tourName;
@@ -26,6 +27,9 @@ public class Booking {
     public Booking() {}
 
     // Getters and Setters
+    public boolean isReviewed() { return reviewed; }
+    public void setReviewed(boolean reviewed) { this.reviewed = reviewed; }
+    
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
     

@@ -92,6 +92,21 @@ public class BookingDAO {
         return false;
     }
     
+    public Booking getCompletedBookingForReview(int bookingId, int userId) {
+        String sql = """
+            SELECT b.*, t.name as tour_name
+            FROM bookings b
+            JOIN tours t ON b.tour_id = t.id
+            WHERE b.id = ?
+              AND b.user_id = ?
+              AND b.status = 'COMPLETED'
+        """;
+
+        List<Booking> list = getBookings(sql, bookingId, userId);
+        return list.isEmpty() ? null : list.get(0);
+    }
+
+    
     private List<Booking> getBookings(String sql, Object... params) {
         List<Booking> bookings = new ArrayList<>();
         try (Connection conn = DatabaseUtil.getConnection();
