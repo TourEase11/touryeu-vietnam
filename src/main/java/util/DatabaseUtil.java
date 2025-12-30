@@ -1,5 +1,6 @@
 package util;
-
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 import java.sql.*;
 
 public class DatabaseUtil {
@@ -7,19 +8,39 @@ public class DatabaseUtil {
     private static final String DB_USER = "SA";
     private static final String DB_PASSWORD = "";
 
+    private static HikariDataSource dataSource;
+
     static {
         try {
             Class.forName("org.hsqldb.jdbc.JDBCDriver");
+
+            HikariConfig config = new HikariConfig();
+            config.setJdbcUrl(DB_URL);
+            config.setUsername(DB_USER);
+            config.setPassword(DB_PASSWORD);
+
+            // ==== CẤU HÌNH POOL ====
+            config.setMaximumPoolSize(10);
+            config.setMinimumIdle(2);
+            config.setIdleTimeout(30000);
+            config.setConnectionTimeout(10000);
+            config.setPoolName("TourHikariPool");
+
+            dataSource = new HikariDataSource(config);
+
             initDatabase();
-        } catch (ClassNotFoundException e) {
+
+            System.out.println("HikariCP initialized!");
+
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     // DAO gọi hàm này để truy vấn DB
     public static Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
-    }
+    	return dataSource.getConnection();
+    	}
 
     private static void initDatabase() {
         try (Connection conn = getConnection(); Statement stmt = conn.createStatement()) {

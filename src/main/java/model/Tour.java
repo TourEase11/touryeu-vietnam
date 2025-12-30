@@ -9,7 +9,7 @@ public class Tour {
     private String name;
     private String description;
     private String location;
-    private int duration;
+    private int duration;//thời lượng
     private double price;
     private double discount;
     private String image;
@@ -18,8 +18,8 @@ public class Tour {
     private int categoryId;
     private String categoryName;
     private String vehicle;
-    private String itinerary;
-    private boolean featured;
+    private String itinerary; //Lịch trình chi tiết
+    private boolean featured; //Có nổi bật hay không
     private Timestamp createdAt;
     private double avgRating;
     private int reviewCount;
