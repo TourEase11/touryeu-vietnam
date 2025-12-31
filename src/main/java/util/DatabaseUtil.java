@@ -3,39 +3,44 @@ import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import java.sql.*;
 
+
+
 public class DatabaseUtil {
-    private static final String DB_URL = "jdbc:hsqldb:file:tourdb/tourdb";
-    private static final String DB_USER = "SA";
-    private static final String DB_PASSWORD = "";
+	  private static final String DB_URL = "jdbc:hsqldb:file:D:/tour_up_github/TourBooking/tourdb/tourdb";// chỉnh sửa D:/tour_up_github/TourBooking/tourdb/tourdb thành nơi bạn chứa tourdb trong máy bạn
+	    private static final String DB_USER = "SA";
+	    private static final String DB_PASSWORD = "";
 
-    private static HikariDataSource dataSource;
+	 private static HikariDataSource dataSource;
+	 
+	    static {
+	        try {
+	        	 Class.forName("org.hsqldb.jdbc.JDBCDriver");
 
-    static {
-        try {
-            Class.forName("org.hsqldb.jdbc.JDBCDriver");
+	             HikariConfig config = new HikariConfig();
+	             config.setJdbcUrl(DB_URL);
+	             config.setUsername(DB_USER);
+	             config.setPassword(DB_PASSWORD);
 
-            HikariConfig config = new HikariConfig();
-            config.setJdbcUrl(DB_URL);
-            config.setUsername(DB_USER);
-            config.setPassword(DB_PASSWORD);
+	             // ==== CẤU HÌNH POOL ====
+	             config.setMaximumPoolSize(10);
+	             config.setMinimumIdle(2);
+	             config.setIdleTimeout(30000);
+	             config.setConnectionTimeout(10000);
+	             config.setPoolName("TourHikariPool");
 
-            // ==== CẤU HÌNH POOL ====
-            config.setMaximumPoolSize(10);
-            config.setMinimumIdle(2);
-            config.setIdleTimeout(30000);
-            config.setConnectionTimeout(10000);
-            config.setPoolName("TourHikariPool");
+	             dataSource = new HikariDataSource(config);
 
-            dataSource = new HikariDataSource(config);
+	             initDatabase();
 
-            initDatabase();
+	             System.out.println("HikariCP initialized!");
 
-            System.out.println("HikariCP initialized!");
 
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	        }
+	    }
+	    
+	   
 
     // DAO gọi hàm này để truy vấn DB
     public static Connection getConnection() throws SQLException {
@@ -131,7 +136,7 @@ public class DatabaseUtil {
             
             System.out.println("Database initialized successfully!");
            
-            stmt.execute("CHECKPOINT");
+           
 
         } catch (SQLException e) {
             e.printStackTrace();
