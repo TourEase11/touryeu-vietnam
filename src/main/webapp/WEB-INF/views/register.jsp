@@ -30,7 +30,7 @@
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Số điện thoại *</label>
-                            <input type="tel" class="form-control" name="phone" required>
+                            <input type="tel" class="form-control" name="phone" pattern="0[0-9]{9}" required>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Địa chỉ</label>

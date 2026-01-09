@@ -10,6 +10,9 @@ import javax.servlet.http.*;
 import java.io.IOException;
 import java.sql.Date;
 import java.util.List;
+import util.MailUtil;
+import javax.mail.MessagingException;
+
 
 @WebServlet("/booking/*")
 public class BookingServlet extends HttpServlet {
@@ -50,7 +53,12 @@ public class BookingServlet extends HttpServlet {
         String pathInfo = req.getPathInfo();
         
         if ("/create".equals(pathInfo)) {
-            handleCreateBooking(req, resp);
+            try {
+				handleCreateBooking(req, resp);
+			} catch (ServletException | IOException | MessagingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
         }
     }
     
@@ -69,7 +77,7 @@ public class BookingServlet extends HttpServlet {
     }
     
     private void handleCreateBooking(HttpServletRequest req, HttpServletResponse resp) 
-            throws ServletException, IOException {
+            throws ServletException, IOException, MessagingException {
         User user = (User) req.getSession().getAttribute("user");
         
         int tourId = Integer.parseInt(req.getParameter("tourId"));
@@ -99,6 +107,16 @@ public class BookingServlet extends HttpServlet {
         
         if (bookingId > 0) {
             tourDAO.updateAvailableSeats(tourId, numPeople);
+            // SEND MAIL
+            MailUtil.sendBookingConfirmation(
+			    contactEmail,
+			    contactName,
+			    tour.getName(),
+			    departureDate.toString(),
+			    numPeople,
+			    totalPrice
+			);
+
             resp.sendRedirect(req.getContextPath() + "/booking/payment?bookingId=" + bookingId);
         } else {
             req.setAttribute("error", "Đặt tour thất bại!");
