@@ -33,4 +33,10 @@ public class AuthFilter implements Filter {
 
         chain.doFilter(req, res);
     }
+
+    @Override
+    public void init(FilterConfig filterConfig) throws ServletException {}
+
+    @Override
+    public void destroy() {}
 }

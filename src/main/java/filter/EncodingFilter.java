@@ -24,4 +24,10 @@ public class EncodingFilter implements Filter {
 
         chain.doFilter(request, response);
     }
+
+    @Override
+    public void init(FilterConfig filterConfig) throws ServletException {}
+
+    @Override
+    public void destroy() {}
 }

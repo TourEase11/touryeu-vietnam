@@ -168,7 +168,11 @@ public class TourDAO {
         tour.setDuration(rs.getInt("duration"));
         tour.setPrice(rs.getDouble("price"));
         tour.setDiscount(rs.getDouble("discount"));
-        tour.setImage(rs.getString("image"));
+        
+        // Xử lý ảnh mặc định nếu dữ liệu trống
+        String img = rs.getString("image");
+        tour.setImage(img != null && !img.isEmpty() ? img : "https://placehold.co/300x200?text=No+Image");
+        
         tour.setAvailableSeats(rs.getInt("available_seats"));
         tour.setDepartureDate(rs.getDate("departure_date"));
         tour.setCategoryId(rs.getInt("category_id"));
@@ -177,8 +181,32 @@ public class TourDAO {
         tour.setItinerary(rs.getString("itinerary"));
         tour.setFeatured(rs.getBoolean("featured"));
         tour.setCreatedAt(rs.getTimestamp("created_at"));
-        tour.setAvgRating(rs.getDouble("avg_rating"));
+        
+        // Làm tròn rating 1 chữ số thập phân
+        double rating = rs.getDouble("avg_rating");
+        tour.setAvgRating(Math.round(rating * 10.0) / 10.0);
         tour.setReviewCount(rs.getInt("review_count"));
         return tour;
     }
+    public List<Tour> getAllToursPaged(int offset, int limit) {
+        String sql = "SELECT t.*, c.name as category_name, " +
+                     "0 as avg_rating, 0 as review_count " + 
+                     "FROM tours t LEFT JOIN categories c ON t.category_id = c.id " +
+                     "ORDER BY t.created_at DESC LIMIT ? OFFSET ?";
+                     
+        return getTours(sql, limit, offset);
+    }
+
+    public int getTotalToursCount() {
+        String sql = "SELECT COUNT(*) FROM tours";
+        try (Connection conn = util.DatabaseUtil.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) return rs.getInt(1);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+    
 }

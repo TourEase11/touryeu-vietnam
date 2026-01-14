@@ -13,7 +13,6 @@ import java.util.List;
 import util.MailUtil;
 import javax.mail.MessagingException;
 
-
 @WebServlet("/booking/*")
 public class BookingServlet extends HttpServlet {
     private BookingDAO bookingDAO = new BookingDAO();
